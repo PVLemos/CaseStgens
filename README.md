@@ -68,4 +68,4 @@ dotnet test
 
 ## 📚 Referências e Créditos
 
-A estrutura base do frontend foram inspirados nos conceitos discutidos pelo professor Macoratti em sua [playlist sobre o desafio STGEN](https://youtube.com/playlist?list=PL8Tes0ciwiaRKdVMSZvq-8LlXNyMKQUIC&si=_4nB4rEex7euA2Lo).
+A estrutura base do frontend foram inspirados nos conceitos discutidos pelo professor Macoratti em sua [playlist sobre o BLAZOR](https://youtube.com/playlist?list=PL8Tes0ciwiaRKdVMSZvq-8LlXNyMKQUIC&si=_4nB4rEex7euA2Lo).
