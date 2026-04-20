@@ -1,4 +1,3 @@
-````markdown
 # Good Hamburger | Solução de Gerenciamento de Pedidos
 
 Este repositório contém a implementação técnica do desafio proposto pela STGEN. O foco do desenvolvimento foi entregar uma arquitetura desacoplada e fácil de testar, simulando o fluxo real de uma operação de lanchonete.
@@ -48,7 +47,6 @@ O motor de cálculo identifica automaticamente as seguintes combinações para a
 cd GoodHamburger.Api
 dotnet run
 ```
-````
 
 _Swagger disponível em: `http://localhost:5000/swagger`_
 
