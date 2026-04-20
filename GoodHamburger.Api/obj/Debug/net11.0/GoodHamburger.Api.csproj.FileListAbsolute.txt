@@ -36,3 +36,4 @@ C:\Users\paulo\OneDrive\Área de Trabalho\CaseDevC#\GoodHamburger.Api\obj\Debug\
 C:\Users\paulo\OneDrive\Área de Trabalho\CaseDevC#\GoodHamburger.Api\obj\Debug\net11.0\GoodHamburger.Api.pdb
 C:\Users\paulo\OneDrive\Área de Trabalho\CaseDevC#\GoodHamburger.Api\obj\Debug\net11.0\GoodHamburger.Api.genruntimeconfig.cache
 C:\Users\paulo\OneDrive\Área de Trabalho\CaseDevC#\GoodHamburger.Api\obj\Debug\net11.0\ref\GoodHamburger.Api.dll
+C:\Users\paulo\OneDrive\Área de Trabalho\CaseDevC#\GoodHamburger.Api\obj\Debug\net11.0\GoodHamburger.Api.sourcelink.json

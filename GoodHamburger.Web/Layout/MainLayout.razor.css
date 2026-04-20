@@ -1,0 +1,22 @@
+.page {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.top-nav {
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+    margin-bottom: 2rem;
+    border-radius: 0 0 12px 12px;
+}
+
+main {
+    flex: 1;
+}
+
+article {
+    padding-bottom: 2rem;
+}

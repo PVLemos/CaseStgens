@@ -1,0 +1,74 @@
+@using GoodHamburger.Web.Services
+@inject NotificationService NotificationService
+@implements IDisposable
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1100">
+    @foreach (var toast in toasts)
+    {
+        <div class="toast show animate-in glass-panel" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header border-0 bg-transparent text-main">
+                <strong class="me-auto">🍔 GoodHamburger</strong>
+                <button type="button" class="btn-close" @onclick="() => RemoveToast(toast)"></button>
+            </div>
+            <div class="toast-body fw-medium">
+                @toast.Message
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private List<ToastMessage> toasts = new();
+
+    protected override void OnInitialized()
+    {
+        NotificationService.OnMessageReceived += HandleMessage;
+    }
+
+    private async void HandleMessage(string message)
+    {
+        var toast = new ToastMessage { Message = message };
+        toasts.Add(toast);
+        StateHasChanged();
+
+        await Task.Delay(4000);
+        RemoveToast(toast);
+    }
+
+    private void RemoveToast(ToastMessage toast)
+    {
+        if (toasts.Contains(toast))
+        {
+            toasts.Remove(toast);
+            StateHasChanged();
+        }
+    }
+
+    public void Dispose()
+    {
+        NotificationService.OnMessageReceived -= HandleMessage;
+    }
+
+    private class ToastMessage
+    {
+        public string Message { get; set; } = "";
+    }
+}
+
+<style>
+    .animate-in {
+        animation: slideIn 0.3s ease-out forwards;
+    }
+
+    @@keyframes slideIn {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+
+    .toast {
+        margin-top: 10px;
+        border-radius: 12px;
+        min-width: 250px;
+        background: rgba(255, 255, 255, 0.9);
+    }
+</style>

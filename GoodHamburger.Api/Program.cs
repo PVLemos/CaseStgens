@@ -16,6 +16,18 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // Regra de negócio
 builder.Services.AddScoped<ICalculadoraDescontoService, CalculadoraDescontoService>();
 
+// Configuração de CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowBlazorWasm",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:5178", "https://localhost:7238")
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
+
 var app = builder.Build();
 
 // Garantir que a base de dados tem as sementes (seeding)
@@ -28,7 +40,9 @@ using (var scope = app.Services.CreateScope())
 app.UseSwagger();
 app.UseSwaggerUI();
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
+
+app.UseCors("AllowBlazorWasm");
 
 app.UseAuthorization();
 

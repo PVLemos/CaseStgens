@@ -1,0 +1,194 @@
+@page "/carrinho"
+@using GoodHamburger.Web.Models
+@using GoodHamburger.Web.DTOs
+@using GoodHamburger.Web.Services
+@inject HttpClient Http
+@inject CarrinhoState CarrinhoState
+@implements IDisposable
+
+<PageTitle>Carrinho</PageTitle>
+
+<div class="row pt-4">
+    <div class="col-md-8 mx-auto">
+        <h2 class="fw-bold mb-4" style="color: var(--text-main);">Meu Pedido</h2>
+
+        @if (CarrinhoState.ItemIds.Count == 0 && response == null)
+        {
+            <div class="text-center py-5 glass-panel">
+                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" class="bi bi-cart-x text-muted mb-3" viewBox="0 0 16 16">
+                  <path d="M7.354 5.646a.5.5 0 1 0-.708.708L7.793 7.5 6.646 8.646a.5.5 0 1 0 .708.708L8.5 8.207l1.146 1.147a.5.5 0 0 0 .708-.708L9.207 7.5l1.147-1.146a.5.5 0 0 0-.708-.708L8.5 6.793 7.354 5.646z"/>
+                  <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1H.5zm3.915 10L3.102 4h10.796l-1.313 7h-8.17zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+                </svg>
+                <h4 class="text-muted fw-bold">O seu carrinho está vazio.</h4>
+                <p class="text-muted mt-2">Navegue pelo cardápio e adicione os melhores hambúrgueres.</p>
+                <a href="/cardapio" class="btn btn-primary mt-3 px-4 rounded-pill fw-bold">Ver Cardápio</a>
+            </div>
+        }
+        else if (response != null)
+        {
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                <div class="card-header bg-success text-white py-3 text-center border-0">
+                    <h4 class="mb-0 fw-bold"><i class="bi bi-check-circle-fill me-2"></i> Pedido Confirmado!</h4>
+                </div>
+                <div class="card-body p-4 bg-white">
+                    <p class="text-muted mb-4 text-center">Agradecemos pela preferência. Seu número de pedido é <strong>#@response.Id</strong></p>
+                    
+                    <div class="bg-light p-3 rounded-3 mb-4">
+                        <h5 class="fw-bold border-bottom pb-2 mb-3">Itens do Pedido</h5>
+                        <ul class="list-unstyled mb-0">
+                            @foreach(var item in response.Itens)
+                            {
+                                <li class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                                    <span class="fw-semibold">@item.Nome</span>
+                                    <span>R$ @item.Preco.ToString("0.00")</span>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted fw-semibold">Subtotal</span>
+                        <span class="fw-bold">R$ @response.Subtotal.ToString("0.00")</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="text-success fw-semibold">Desconto</span>
+                        <span class="text-success fw-bold">- R$ @response.Desconto.ToString("0.00")</span>
+                    </div>
+                    <hr />
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <span class="fs-4 fw-bold">Total</span>
+                        <span class="fs-4 fw-bold" style="color: var(--primary-color);">R$ @response.Total.ToString("0.00")</span>
+                    </div>
+                    
+                    <button class="btn btn-outline-primary w-100 rounded-pill fw-bold py-2" @onclick="NovoPedido">
+                        Fazer Novo Pedido
+                    </button>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="card border-0 shadow-sm rounded-4 mb-4">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold border-bottom pb-3 mb-4">Resumo do Carrinho</h5>
+                    
+                    <div class="mb-4" style="max-height: 300px; overflow-y: auto;">
+                        <ul class="list-group list-group-flush">
+                            @foreach (var item in CarrinhoState.Itens)
+                            {
+                                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent px-0 border-light">
+                                    <div>
+                                        <h6 class="mb-0 fw-bold">@item.Nome</h6>
+                                        <small class="text-muted">Preço: R$ @item.Preco.ToString("0.00")</small>
+                                    </div>
+                                    <button class="btn btn-link link-danger p-0 ms-2" @onclick="() => Remover(item)">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
+                                          <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm3.374 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z"/>
+                                        </svg>
+                                    </button>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mb-4 pt-2 border-top">
+                        <span class="fs-5 fw-bold">Subtotal Atual:</span>
+                        <span class="fs-5 fw-bold" style="color: var(--primary-color);">R$ @CarrinhoState.Itens.Sum(i => i.Preco).ToString("0.00")</span>
+                    </div>
+                    
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-danger flex-grow-1 rounded-pill fw-bold py-2" @onclick="Limpar" disabled="@enviando">
+                            Esvaziar
+                        </button>
+                        <button class="btn btn-primary flex-grow-1 rounded-pill fw-bold py-2" @onclick="FinalizarPedido" disabled="@enviando">
+                            @if (enviando)
+                            {
+                                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                <span>Processando...</span>
+                            }
+                            else
+                            {
+                                <span>Finalizar Pagamento</span>
+                            }
+                        </button>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(erroMessage))
+                    {
+                        <div class="alert alert-danger mt-4 rounded-3 border-0 shadow-sm">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i> @erroMessage
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    private PedidoResponseDto? response;
+    private bool enviando = false;
+    private string erroMessage = "";
+
+    protected override void OnInitialized()
+    {
+        CarrinhoState.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        CarrinhoState.OnChange -= StateHasChanged;
+    }
+
+    private void Limpar()
+    {
+        CarrinhoState.LimparCarrinho();
+    }
+
+    private void Remover(ItemCardapio item)
+    {
+        CarrinhoState.RemoverItem(item);
+    }
+
+    private void NovoPedido()
+    {
+        response = null;
+        erroMessage = "";
+        CarrinhoState.LimparCarrinho(); // limpa o carrinho
+    }
+
+    private async Task FinalizarPedido() // finaliza o pedido
+    {
+        if (CarrinhoState.ItemIds.Count == 0) return; // se o carrinho estiver vazio, não faz nada
+
+        enviando = true;
+        erroMessage = "";
+
+        var request = new PedidoRequestDto
+        {
+            ItemIds = CarrinhoState.ItemIds.ToList()
+        };
+
+        try
+        {
+            var result = await Http.PostAsJsonAsync("api/pedidos", request);
+            if (result.IsSuccessStatusCode)
+            {
+                response = await result.Content.ReadFromJsonAsync<PedidoResponseDto>();
+                CarrinhoState.LimparCarrinho(); // limpa no state global após finalizar
+            }
+            else
+            {
+                erroMessage = "Ocorreu um erro ao finalizar o pedido. Verifique a conexão.";
+            }
+        }
+        catch (Exception ex)
+        {
+            erroMessage = $"Erro: {ex.Message}";
+        }
+        finally
+        {
+            enviando = false;
+        }
+    }
+}

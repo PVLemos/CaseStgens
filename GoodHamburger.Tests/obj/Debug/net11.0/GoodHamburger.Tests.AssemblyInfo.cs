@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("GoodHamburger.Tests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7b5d1f26cd3a5a904be8fb0e871f594923083511")]
 [assembly: System.Reflection.AssemblyProductAttribute("GoodHamburger.Tests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("GoodHamburger.Tests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
