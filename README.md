@@ -66,6 +66,17 @@ cd GoodHamburger.Tests
 dotnet test
 ```
 
+---
+
+## 🏗️ O que ficou de fora
+
+- **Persistência Real:** Atualmente utilizamos `In-Memory Database`. Em produção, o EF Core seria configurado para um banco relacional (SQL Server/PostgreSQL).
+- **Autenticação (JWT/Identity):** O sistema não possui controle de usuários ou níveis de acesso.
+- **Dockerização:** A criação de um `Dockerfile` e `docker-compose.yml` facilitaria ainda mais a portabilidade e o deploy.
+- **Logs e Observabilidade:** Implementação de logs estruturados (Serilog) e health checks para monitoramento em tempo real.
+
+---
+
 ## 📚 Referências e Créditos
 
 A estrutura base do frontend foi inspirada nos conceitos discutidos pelo professor Macoratti em sua [playlist sobre o BLAZOR](https://youtube.com/playlist?list=PL8Tes0ciwiaRKdVMSZvq-8LlXNyMKQUIC&si=_4nB4rEex7euA2Lo).
