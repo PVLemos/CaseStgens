@@ -1,3 +1,4 @@
+using Xunit;
 using GoodHamburger.Api.Models;
 using GoodHamburger.Api.Services;
 
