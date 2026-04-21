@@ -18,7 +18,7 @@ Este repositório contém a implementação técnica do desafio proposto pela ST
 
 Em vez de sobrecarregar o projeto com camadas desnecessárias, apliquei padrões que garantem manutenção e testabilidade:
 
-- **Service Layer Pattern:** A inteligência de negócio — especialmente a lógica complexa de precificação e descontos — foi isolada no `CalculadoraDescontoService`. Isso mantém os controllers magros e facilita a escrita de testes unitários.
+- **Service Layer Pattern:** A lógica complexa de precificação e descontos foi isolada no `CalculadoraDescontoService`. Isso mantém os controllers magros e facilita a escrita de testes unitários.
 - **Desacoplamento com DTOs:** Utilizei Data Transfer Objects para garantir que as entidades de banco de dados não sejam expostas diretamente. Isso protege o contrato da API e dá flexibilidade para evoluir o modelo interno.
 - **Estratégia de Infra:** O uso do _In-Memory Database_ foi uma decisão deliberada para este desafio. O objetivo é permitir que o revisor execute o projeto imediatamente após o clone, sem dependências externas como Docker ou instâncias de SQL local.
 - **Validações Semânticas:** O sistema valida regras de negócio (como a restrição de um item por categoria) e responde com status codes apropriados, seguindo as melhores práticas de APIs RESTful.
@@ -68,4 +68,4 @@ dotnet test
 
 ## 📚 Referências e Créditos
 
-A estrutura base do frontend foram inspirados nos conceitos discutidos pelo professor Macoratti em sua [playlist sobre o BLAZOR](https://youtube.com/playlist?list=PL8Tes0ciwiaRKdVMSZvq-8LlXNyMKQUIC&si=_4nB4rEex7euA2Lo).
+A estrutura base do frontend foi inspirada nos conceitos discutidos pelo professor Macoratti em sua [playlist sobre o BLAZOR](https://youtube.com/playlist?list=PL8Tes0ciwiaRKdVMSZvq-8LlXNyMKQUIC&si=_4nB4rEex7euA2Lo).

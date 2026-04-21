@@ -72,3 +72,5 @@ yarn-error.log*
 # Rider
 .idea/
 *.sln.iml
+
+*GoodHamburger.sln
