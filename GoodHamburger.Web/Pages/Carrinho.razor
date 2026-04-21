@@ -4,6 +4,7 @@
 @using GoodHamburger.Web.Services
 @inject HttpClient Http
 @inject CarrinhoState CarrinhoState
+@inject NavigationManager Navigation
 @implements IDisposable
 
 <PageTitle>Carrinho</PageTitle>
@@ -12,7 +13,7 @@
     <div class="col-md-8 mx-auto">
         <h2 class="fw-bold mb-4" style="color: var(--text-main);">Meu Pedido</h2>
 
-        @if (CarrinhoState.ItemIds.Count == 0 && response == null)
+        @if (CarrinhoState.ItemIds.Count == 0)
         {
             <div class="text-center py-5 glass-panel">
                 <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" class="bi bi-cart-x text-muted mb-3" viewBox="0 0 16 16">
@@ -22,48 +23,6 @@
                 <h4 class="text-muted fw-bold">O seu carrinho está vazio.</h4>
                 <p class="text-muted mt-2">Navegue pelo cardápio e adicione os melhores hambúrgueres.</p>
                 <a href="/cardapio" class="btn btn-primary mt-3 px-4 rounded-pill fw-bold">Ver Cardápio</a>
-            </div>
-        }
-        else if (response != null)
-        {
-            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
-                <div class="card-header bg-success text-white py-3 text-center border-0">
-                    <h4 class="mb-0 fw-bold"><i class="bi bi-check-circle-fill me-2"></i> Pedido Confirmado!</h4>
-                </div>
-                <div class="card-body p-4 bg-white">
-                    <p class="text-muted mb-4 text-center">Agradecemos pela preferência. Seu número de pedido é <strong>#@response.Id</strong></p>
-                    
-                    <div class="bg-light p-3 rounded-3 mb-4">
-                        <h5 class="fw-bold border-bottom pb-2 mb-3">Itens do Pedido</h5>
-                        <ul class="list-unstyled mb-0">
-                            @foreach(var item in response.Itens)
-                            {
-                                <li class="d-flex justify-content-between align-items-center py-2 border-bottom">
-                                    <span class="fw-semibold">@item.Nome</span>
-                                    <span>R$ @item.Preco.ToString("0.00")</span>
-                                </li>
-                            }
-                        </ul>
-                    </div>
-                    
-                    <div class="d-flex justify-content-between mb-2">
-                        <span class="text-muted fw-semibold">Subtotal</span>
-                        <span class="fw-bold">R$ @response.Subtotal.ToString("0.00")</span>
-                    </div>
-                    <div class="d-flex justify-content-between mb-3">
-                        <span class="text-success fw-semibold">Desconto</span>
-                        <span class="text-success fw-bold">- R$ @response.Desconto.ToString("0.00")</span>
-                    </div>
-                    <hr />
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <span class="fs-4 fw-bold">Total</span>
-                        <span class="fs-4 fw-bold" style="color: var(--primary-color);">R$ @response.Total.ToString("0.00")</span>
-                    </div>
-                    
-                    <button class="btn btn-outline-primary w-100 rounded-pill fw-bold py-2" @onclick="NovoPedido">
-                        Fazer Novo Pedido
-                    </button>
-                </div>
             </div>
         }
         else
@@ -126,7 +85,6 @@
 </div>
 
 @code {
-    private PedidoResponseDto? response;
     private bool enviando = false;
     private string erroMessage = "";
 
@@ -152,7 +110,6 @@
 
     private void NovoPedido()
     {
-        response = null;
         erroMessage = "";
         CarrinhoState.LimparCarrinho(); // limpa o carrinho
     }
@@ -174,8 +131,12 @@
             var result = await Http.PostAsJsonAsync("api/pedidos", request);
             if (result.IsSuccessStatusCode)
             {
-                response = await result.Content.ReadFromJsonAsync<PedidoResponseDto>();
-                CarrinhoState.LimparCarrinho(); // limpa no state global após finalizar
+                var response = await result.Content.ReadFromJsonAsync<PedidoResponseDto>();
+                if (response != null)
+                {
+                    CarrinhoState.LimparCarrinho(); // limpa no state global após finalizar
+                    Navigation.NavigateTo($"/pedido/{response.Id}");
+                }
             }
             else
             {

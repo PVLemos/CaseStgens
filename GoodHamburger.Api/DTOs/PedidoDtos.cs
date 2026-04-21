@@ -12,6 +12,7 @@ public class PedidoResponseDto // resposta com os dados do pedido
     public decimal Subtotal { get; set; }
     public decimal Desconto { get; set; }
     public decimal Total { get; set; }
+    public string Status { get; set; } = string.Empty;
     public List<ItemCardapioDto> Itens { get; set; } = new();
 }
 

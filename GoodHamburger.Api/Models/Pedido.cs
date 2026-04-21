@@ -10,4 +10,5 @@ public class Pedido
     public decimal Subtotal { get; set; }
     public decimal Desconto { get; set; }
     public decimal Total { get; set; }
+    public PedidoStatus Status { get; set; } = PedidoStatus.Pendente;
 }

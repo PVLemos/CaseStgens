@@ -77,5 +77,4 @@ yarn-error.log*
 
 .gitignore
 *.pdf
-*.md
 *.txt

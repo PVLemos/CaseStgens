@@ -130,6 +130,22 @@ public class PedidosController : ControllerBase
         return NoContent();
     }
 
+    [HttpPut("{id}/pagar")]
+    public async Task<IActionResult> PagarPedido(int id)
+    {
+        var pedido = await _context.Pedidos.FindAsync(id);
+        if (pedido == null)
+            return NotFound("Pedido não encontrado.");
+
+        if (pedido.Status != PedidoStatus.Pendente)
+            return BadRequest("Este pedido já foi pago ou está em outro estágio.");
+
+        pedido.Status = PedidoStatus.Pago;
+        await _context.SaveChangesAsync();
+
+        return Ok(MapToDto(pedido));
+    }
+
     private static PedidoResponseDto MapToDto(Pedido pedido)
     {
         return new PedidoResponseDto
@@ -138,6 +154,7 @@ public class PedidosController : ControllerBase
             Subtotal = pedido.Subtotal,
             Desconto = pedido.Desconto,
             Total = pedido.Total,
+            Status = pedido.Status.ToString(),
             Itens = pedido.Itens.Select(i => new ItemCardapioDto
             {
                 Id = i.Id,
